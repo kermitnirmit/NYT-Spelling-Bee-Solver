@@ -1,4 +1,5 @@
 from tqdm import tqdm
+from collections import defaultdict
 import read_words
 
 def letters_match(word, golden, all_letters):
@@ -11,7 +12,7 @@ def letters_match(word, golden, all_letters):
 def solve(golden, other_letters, words):
   return sorted(list(filter(lambda x: letters_match(x, golden, set([golden] + other_letters)) 
       and len(x) >= 4, tqdm(words))), 
-      key = lambda x : len(x), reverse=True,
+      key = lambda x : len(set(x)), reverse=True,
   )
 
 
@@ -25,4 +26,12 @@ if __name__ == "__main__":
       other_letters = list(letString)
     words = read_words.load_words()
     wordList = solve(golden, other_letters, words)
-    print(wordList)
+    asdf = defaultdict(list)
+    for word in wordList:
+      asdf[len(word)].append(word)
+    pangrams = [x for x in wordList if len(set(x)) == 7]
+    
+    print("pangrams: ", pangrams)
+
+    for i in range(max(asdf.keys()),3,-1):
+      print(i, "letter words: ", asdf[i])
